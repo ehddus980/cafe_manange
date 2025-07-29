@@ -9,24 +9,26 @@
         <div class="col-md-3 col-lg-2">
             <div class="sidebar">
                 <div class="p-3">
-                    <h5 class="mb-3"><i class="fas fa-tachometer-alt me-2"></i>관리자 메뉴</h5>
-                    <div class="list-group">
-                        <a href="{{ url_for('admin_dashboard') }}" class="list-group-item list-group-item-action active">
+                    <h5 class="mb-4 text-center" style="color: var(--accent-gold); font-weight: 700; text-transform: uppercase; letter-spacing: 1px;">
+                        <i class="fas fa-tachometer-alt me-2"></i>관리자 메뉴
+                    </h5>
+                    <nav class="nav flex-column">
+                        <a href="{{ url_for('admin_dashboard') }}" class="nav-link active">
                             <i class="fas fa-chart-line me-2"></i>대시보드
                         </a>
-                        <a href="{{ url_for('admin_sales') }}" class="list-group-item list-group-item-action">
+                        <a href="{{ url_for('admin_sales') }}" class="nav-link">
                             <i class="fas fa-chart-bar me-2"></i>매출 관리
                         </a>
-                        <a href="{{ url_for('admin_menu') }}" class="list-group-item list-group-item-action">
+                        <a href="{{ url_for('admin_menu') }}" class="nav-link">
                             <i class="fas fa-utensils me-2"></i>메뉴 관리
                         </a>
-                        <a href="{{ url_for('admin_categories') }}" class="list-group-item list-group-item-action">
+                        <a href="{{ url_for('admin_categories') }}" class="nav-link">
                             <i class="fas fa-tags me-2"></i>카테고리 관리
                         </a>
-                        <a href="{{ url_for('admin_import_orders') }}" class="list-group-item list-group-item-action">
+                        <a href="{{ url_for('admin_import_orders') }}" class="nav-link">
                             <i class="fas fa-file-import me-2"></i>데이터 가져오기
                         </a>
-                    </div>
+                    </nav>
                 </div>
             </div>
         </div>
@@ -44,48 +46,42 @@
             <!-- 통계 카드 -->
             <div class="row mb-4">
                 <div class="col-md-4">
-                    <div class="card bg-primary text-white">
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between">
-                                <div>
-                                    <h6 class="card-title">오늘 주문</h6>
-                                    <h3 class="mb-0">{{ today_orders }}</h3>
-                                </div>
-                                <div class="align-self-center">
-                                    <i class="fas fa-shopping-cart fa-2x"></i>
-                                </div>
+                    <div class="stats-card hover-lift">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <div class="number">{{ today_orders }}</div>
+                                <div class="label">오늘 주문</div>
+                            </div>
+                            <div class="align-self-center">
+                                <i class="fas fa-shopping-cart fa-2x" style="color: var(--primary-red);"></i>
                             </div>
                         </div>
                     </div>
                 </div>
                 
                 <div class="col-md-4">
-                    <div class="card bg-success text-white">
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between">
-                                <div>
-                                    <h6 class="card-title">오늘 매출</h6>
-                                    <h3 class="mb-0">{{ "{:,}".format(today_sales) }}원</h3>
-                                </div>
-                                <div class="align-self-center">
-                                    <i class="fas fa-won-sign fa-2x"></i>
-                                </div>
+                    <div class="stats-card hover-lift">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <div class="number">{{ "{:,}".format(today_sales) }}원</div>
+                                <div class="label">오늘 매출</div>
+                            </div>
+                            <div class="align-self-center">
+                                <i class="fas fa-won-sign fa-2x" style="color: var(--accent-gold);"></i>
                             </div>
                         </div>
                     </div>
                 </div>
                 
                 <div class="col-md-4">
-                    <div class="card bg-warning text-white">
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between">
-                                <div>
-                                    <h6 class="card-title">대기 주문</h6>
-                                    <h3 class="mb-0">{{ pending_orders }}</h3>
-                                </div>
-                                <div class="align-self-center">
-                                    <i class="fas fa-clock fa-2x"></i>
-                                </div>
+                    <div class="stats-card hover-lift">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <div class="number">{{ pending_orders }}</div>
+                                <div class="label">대기 주문</div>
+                            </div>
+                            <div class="align-self-center">
+                                <i class="fas fa-clock fa-2x" style="color: var(--warning-color);"></i>
                             </div>
                         </div>
                     </div>
