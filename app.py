@@ -1,12 +1,18 @@
-from flask import Flask, render_template, request, redirect, url_for, flash, session, jsonify, send_file
-from flask_session import Session
-from werkzeug.utils import secure_filename
-from werkzeug.security import check_password_hash, generate_password_hash
 import os
 import pandas as pd
 from datetime import datetime, timedelta
-import json
+from flask import Flask, render_template, request, redirect, url_for, flash, session, jsonify, send_file
+from flask_sqlalchemy import SQLAlchemy
+from flask_session import Session
+from werkzeug.utils import secure_filename
+from werkzeug.security import check_password_hash, generate_password_hash
+import secrets
+from functools import wraps
 from io import BytesIO
+
+# 환경변수 파일 로드
+from dotenv import load_dotenv
+load_dotenv()
 
 from config import *
 from models import db, Menu, Order, OrderItem
@@ -30,12 +36,12 @@ def allowed_file(filename):
 
 # 관리자 인증 데코레이터
 def admin_required(f):
+    @wraps(f)
     def decorated_function(*args, **kwargs):
         if not session.get('admin_logged_in'):
             flash('관리자 로그인이 필요합니다.', 'error')
             return redirect(url_for('admin_login'))
         return f(*args, **kwargs)
-    decorated_function.__name__ = f.__name__
     return decorated_function
 
 # 메인 라우트
