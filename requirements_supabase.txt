@@ -1,0 +1,19 @@
+# Supabase 카페 관리 시스템 의존성
+Flask==2.3.3
+Flask-SQLAlchemy==3.0.5
+Flask-Session==0.5.0
+Werkzeug==2.3.7
+python-dotenv==1.0.0
+
+# Supabase 클라이언트
+supabase==2.0.2
+
+# PostgreSQL 연결
+psycopg2-binary==2.9.7
+
+# 데이터 처리 (선택사항)
+pandas>=2.0.0
+openpyxl>=3.1.0
+
+# 추가 유틸리티
+requests==2.31.0 

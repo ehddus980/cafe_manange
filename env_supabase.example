@@ -1,0 +1,32 @@
+# Supabase 카페 관리 시스템 환경변수 설정
+# 이 파일을 .env로 복사하고 실제 값으로 변경하세요
+
+# Supabase 설정
+SUPABASE_URL=https://your-project.supabase.co
+SUPABASE_ANON_KEY=your-anon-key
+SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
+
+# 데이터베이스 타입 (supabase 또는 sqlite)
+DATABASE_TYPE=supabase
+
+# PostgreSQL 연결 설정 (Supabase 사용시)
+DB_HOST=db.your-project.supabase.co
+DB_PORT=5432
+DB_NAME=postgres
+DB_USER=postgres
+DB_PASSWORD=your-database-password
+
+# 보안 설정
+SECRET_KEY=your-secret-key-change-in-production
+
+# 관리자 계정 설정
+ADMIN_USERNAME=admin
+ADMIN_PASSWORD=admin123
+
+# 파일 업로드 설정
+UPLOAD_FOLDER=static/uploads
+MAX_CONTENT_LENGTH=16777216
+
+# 세션 설정
+SESSION_TYPE=filesystem
+PERMANENT_SESSION_LIFETIME=86400 
