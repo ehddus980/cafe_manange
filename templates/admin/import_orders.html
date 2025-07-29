@@ -1,0 +1,283 @@
+{% extends "base.html" %}
+
+{% block title %}데이터 가져오기 - 카페 주문 관리 시스템{% endblock %}
+
+{% block content %}
+<div class="container-fluid mt-4">
+    <div class="row">
+        <!-- 사이드바 -->
+        <div class="col-md-3 col-lg-2">
+            <div class="sidebar">
+                <div class="p-3">
+                    <h5 class="mb-3"><i class="fas fa-tachometer-alt me-2"></i>관리자 메뉴</h5>
+                    <div class="list-group">
+                        <a href="{{ url_for('admin_dashboard') }}" class="list-group-item list-group-item-action">
+                            <i class="fas fa-chart-line me-2"></i>대시보드
+                        </a>
+                        <a href="{{ url_for('admin_sales') }}" class="list-group-item list-group-item-action">
+                            <i class="fas fa-chart-bar me-2"></i>매출 관리
+                        </a>
+                        <a href="{{ url_for('admin_menu') }}" class="list-group-item list-group-item-action">
+                            <i class="fas fa-utensils me-2"></i>메뉴 관리
+                        </a>
+                        <a href="{{ url_for('admin_categories') }}" class="list-group-item list-group-item-action">
+                            <i class="fas fa-tags me-2"></i>카테고리 관리
+                        </a>
+                        <a href="{{ url_for('admin_import_orders') }}" class="list-group-item list-group-item-action active">
+                            <i class="fas fa-file-import me-2"></i>데이터 가져오기
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 메인 콘텐츠 -->
+        <div class="col-md-9 col-lg-10">
+            <div class="row">
+                <div class="col-12">
+                    <h2 class="mb-4">
+                        <i class="fas fa-file-import text-primary me-2"></i>데이터 가져오기
+                    </h2>
+                </div>
+            </div>
+            
+            <!-- 파일 업로드 -->
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0"><i class="fas fa-upload me-2"></i>Excel 파일 업로드</h5>
+                        </div>
+                        <div class="card-body">
+                            <form action="{{ url_for('admin_import_orders') }}" method="post" enctype="multipart/form-data">
+                                <div class="mb-3">
+                                    <label for="file" class="form-label">Excel 파일 선택</label>
+                                    <input type="file" class="form-control" id="file" name="file" 
+                                           accept=".xlsx,.xls" required>
+                                    <div class="form-text">
+                                        Excel 파일(.xlsx, .xls)만 업로드 가능합니다.
+                                    </div>
+                                </div>
+                                
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-upload me-2"></i>파일 업로드
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 파일 형식 안내 -->
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0"><i class="fas fa-info-circle me-2"></i>파일 형식 안내</h5>
+                        </div>
+                        <div class="card-body">
+                            <p>Excel 파일은 다음과 같은 형식이어야 합니다:</p>
+                            
+                            <div class="table-responsive">
+                                <table class="table table-bordered">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>컬럼명</th>
+                                            <th>설명</th>
+                                            <th>필수 여부</th>
+                                            <th>예시</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>고객명</td>
+                                            <td>주문 고객의 이름</td>
+                                            <td><span class="badge bg-success">필수</span></td>
+                                            <td>홍길동</td>
+                                        </tr>
+                                        <tr>
+                                            <td>배달위치</td>
+                                            <td>배달 주소</td>
+                                            <td><span class="badge bg-success">필수</span></td>
+                                            <td>서울시 강남구...</td>
+                                        </tr>
+                                        <tr>
+                                            <td>메뉴명</td>
+                                            <td>주문한 메뉴의 이름</td>
+                                            <td><span class="badge bg-success">필수</span></td>
+                                            <td>아메리카노</td>
+                                        </tr>
+                                        <tr>
+                                            <td>수량</td>
+                                            <td>주문 수량</td>
+                                            <td><span class="badge bg-success">필수</span></td>
+                                            <td>2</td>
+                                        </tr>
+                                        <tr>
+                                            <td>단가</td>
+                                            <td>메뉴 하나당 가격</td>
+                                            <td><span class="badge bg-success">필수</span></td>
+                                            <td>4500</td>
+                                        </tr>
+                                        <tr>
+                                            <td>소계</td>
+                                            <td>수량 × 단가</td>
+                                            <td><span class="badge bg-success">필수</span></td>
+                                            <td>9000</td>
+                                        </tr>
+                                        <tr>
+                                            <td>온도</td>
+                                            <td>음료 온도 (ice/hot)</td>
+                                            <td><span class="badge bg-warning">선택</span></td>
+                                            <td>ice</td>
+                                        </tr>
+                                        <tr>
+                                            <td>특별요청</td>
+                                            <td>고객의 특별 요청사항</td>
+                                            <td><span class="badge bg-warning">선택</span></td>
+                                            <td>설탕 적게</td>
+                                        </tr>
+                                        <tr>
+                                            <td>총금액</td>
+                                            <td>주문 총 금액</td>
+                                            <td><span class="badge bg-success">필수</span></td>
+                                            <td>15000</td>
+                                        </tr>
+                                        <tr>
+                                            <td>주문상태</td>
+                                            <td>주문 상태 (pending/preparing/ready/delivered/cancelled)</td>
+                                            <td><span class="badge bg-warning">선택</span></td>
+                                            <td>pending</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 주의사항 -->
+            <div class="row">
+                <div class="col-12">
+                    <div class="alert alert-warning">
+                        <h6 class="alert-heading">
+                            <i class="fas fa-exclamation-triangle me-2"></i>주의사항
+                        </h6>
+                        <ul class="mb-0">
+                            <li>메뉴명은 기존에 등록된 메뉴와 정확히 일치해야 합니다.</li>
+                            <li>중복된 주문번호가 있으면 기존 주문을 덮어씁니다.</li>
+                            <li>파일 크기는 16MB 이하여야 합니다.</li>
+                            <li>첫 번째 행은 헤더로 인식됩니다.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 샘플 파일 다운로드 -->
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0"><i class="fas fa-download me-2"></i>샘플 파일</h5>
+                        </div>
+                        <div class="card-body">
+                            <p>데이터 형식을 확인하기 위해 샘플 파일을 다운로드하세요.</p>
+                            <a href="#" class="btn btn-outline-primary" onclick="downloadSampleFile()">
+                                <i class="fas fa-download me-2"></i>샘플 파일 다운로드
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function downloadSampleFile() {
+    // 샘플 데이터 생성
+    const sampleData = [
+        {
+            '고객명': '홍길동',
+            '배달위치': '서울시 강남구 테헤란로 123',
+            '메뉴명': '아메리카노',
+            '수량': 2,
+            '단가': 4500,
+            '소계': 9000,
+            '온도': 'ice',
+            '특별요청': '설탕 적게',
+            '총금액': 9000,
+            '주문상태': 'pending'
+        },
+        {
+            '고객명': '김철수',
+            '배달위치': '서울시 서초구 반포대로 456',
+            '메뉴명': '카페라떼',
+            '수량': 1,
+            '단가': 5500,
+            '소계': 5500,
+            '온도': 'hot',
+            '특별요청': '',
+            '총금액': 5500,
+            '주문상태': 'delivered'
+        }
+    ];
+    
+    // CSV 형식으로 변환
+    const headers = Object.keys(sampleData[0]);
+    const csvContent = [
+        headers.join(','),
+        ...sampleData.map(row => headers.map(header => `"${row[header]}"`).join(','))
+    ].join('\n');
+    
+    // 파일 다운로드
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    link.setAttribute('href', url);
+    link.setAttribute('download', '주문데이터_샘플.csv');
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    // 파일 업로드 유효성 검사
+    const fileInput = document.getElementById('file');
+    const form = document.querySelector('form');
+    
+    form.addEventListener('submit', function(e) {
+        const file = fileInput.files[0];
+        
+        if (!file) {
+            e.preventDefault();
+            alert('파일을 선택해주세요.');
+            return;
+        }
+        
+        // 파일 확장자 검사
+        const allowedExtensions = ['.xlsx', '.xls'];
+        const fileName = file.name.toLowerCase();
+        const isValidExtension = allowedExtensions.some(ext => fileName.endsWith(ext));
+        
+        if (!isValidExtension) {
+            e.preventDefault();
+            alert('Excel 파일(.xlsx, .xls)만 업로드 가능합니다.');
+            return;
+        }
+        
+        // 파일 크기 검사 (16MB)
+        const maxSize = 16 * 1024 * 1024; // 16MB
+        if (file.size > maxSize) {
+            e.preventDefault();
+            alert('파일 크기는 16MB 이하여야 합니다.');
+            return;
+        }
+    });
+});
+</script>
+{% endblock %} 

@@ -1,0 +1,166 @@
+{% extends "base.html" %}
+
+{% block title %}영수증 - 주문 #{{ order.id }}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header text-center">
+                    <h4 class="mb-0">
+                        <i class="fas fa-receipt text-primary me-2"></i>
+                        주문 영수증
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <!-- 주문 정보 -->
+                    <div class="row mb-4">
+                        <div class="col-6">
+                            <h6 class="text-muted">주문번호</h6>
+                            <h5 class="mb-0">#{{ order.id }}</h5>
+                        </div>
+                        <div class="col-6 text-end">
+                            <h6 class="text-muted">주문일시</h6>
+                            <h5 class="mb-0">{{ order.order_date.strftime('%Y-%m-%d %H:%M') }}</h5>
+                        </div>
+                    </div>
+                    
+                    <!-- 고객 정보 -->
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <h6 class="text-muted">고객 정보</h6>
+                            <div class="border rounded p-3">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <strong>고객명:</strong> {{ order.customer_name }}
+                                    </div>
+                                    <div class="col-md-6">
+                                        <strong>배달위치:</strong> {{ order.delivery_location }}
+                                    </div>
+                                </div>
+                                {% if order.delivery_time %}
+                                <div class="row mt-2">
+                                    <div class="col-md-6">
+                                        <strong>배달시간:</strong> {{ order.delivery_time }}
+                                    </div>
+                                </div>
+                                {% endif %}
+                                {% if order.order_request %}
+                                <div class="row mt-2">
+                                    <div class="col-12">
+                                        <strong>요청사항:</strong> {{ order.order_request }}
+                                    </div>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 주문 내역 -->
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <h6 class="text-muted">주문 내역</h6>
+                            <div class="table-responsive">
+                                <table class="table table-bordered">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>메뉴</th>
+                                            <th>온도</th>
+                                            <th>수량</th>
+                                            <th>단가</th>
+                                            <th>소계</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for item in order.items %}
+                                        <tr>
+                                            <td>
+                                                <strong>{{ item.menu.name }}</strong>
+                                                {% if item.special_request %}
+                                                <br><small class="text-muted">{{ item.special_request }}</small>
+                                                {% endif %}
+                                            </td>
+                                            <td>
+                                                {% if item.temperature == 'hot' %}
+                                                    <span class="badge bg-warning">뜨거움</span>
+                                                {% else %}
+                                                    <span class="badge bg-primary">차가움</span>
+                                                {% endif %}
+                                            </td>
+                                            <td>{{ item.quantity }}</td>
+                                            <td>{{ "{:,}".format(item.menu.price) }}원</td>
+                                            <td>{{ "{:,}".format(item.subtotal) }}원</td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <td colspan="4" class="text-end"><strong>총 금액</strong></td>
+                                            <td><strong class="text-primary">{{ "{:,}".format(order.total_amount) }}원</strong></td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 주문 상태 -->
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <h6 class="text-muted">주문 상태</h6>
+                            {% set status_class = {
+                                'pending': 'badge bg-warning',
+                                'preparing': 'badge bg-info',
+                                'ready': 'badge bg-success',
+                                'delivered': 'badge bg-secondary',
+                                'cancelled': 'badge bg-danger'
+                            }[order.status] or 'badge bg-secondary' %}
+                            <span class="{{ status_class }} fs-6">{{ order.status }}</span>
+                        </div>
+                    </div>
+                    
+                    <!-- 액션 버튼 -->
+                    <div class="row">
+                        <div class="col-12 text-center">
+                            <button type="button" class="btn btn-primary me-2" onclick="window.print()">
+                                <i class="fas fa-print me-2"></i>인쇄
+                            </button>
+                            <a href="{{ url_for('admin_sales') }}" class="btn btn-outline-secondary">
+                                <i class="fas fa-arrow-left me-2"></i>목록으로
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+@media print {
+    .navbar, .btn, .sidebar {
+        display: none !important;
+    }
+    
+    .card {
+        border: none !important;
+        box-shadow: none !important;
+    }
+    
+    .card-header {
+        background-color: white !important;
+        border-bottom: 2px solid #000 !important;
+    }
+    
+    body {
+        margin: 0;
+        padding: 20px;
+    }
+    
+    .container {
+        max-width: none !important;
+    }
+}
+</style>
+{% endblock %} 

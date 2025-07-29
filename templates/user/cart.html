@@ -1,0 +1,163 @@
+{% extends "base.html" %}
+
+{% block title %}장바구니 - 카페 주문 관리 시스템{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="fas fa-shopping-cart me-2"></i>장바구니</h5>
+                </div>
+                <div class="card-body">
+                    {% if cart %}
+                        {% for item in cart %}
+                        <div class="row mb-3 border-bottom pb-3">
+                            <div class="col-md-8">
+                                <h6 class="mb-1">{{ item.name }}</h6>
+                                <p class="text-muted mb-1">
+                                    <small>
+                                        온도: {{ '뜨거움' if item.temperature == 'hot' else '차가움' }}
+                                        {% if item.special_request %}
+                                        | 요청: {{ item.special_request }}
+                                        {% endif %}
+                                    </small>
+                                </p>
+                                <p class="mb-0">
+                                    <strong class="text-primary">{{ "{:,}".format(item.price) }}원</strong>
+                                </p>
+                            </div>
+                            <div class="col-md-4 text-end">
+                                <form action="{{ url_for('update_cart') }}" method="post" class="d-inline">
+                                    <input type="hidden" name="action" value="update">
+                                    <input type="hidden" name="index" value="{{ loop.index0 }}">
+                                    <div class="input-group input-group-sm mb-2" style="width: 120px;">
+                                        <input type="number" name="quantity" value="{{ item.quantity }}" 
+                                               min="1" max="10" class="form-control">
+                                        <button type="submit" class="btn btn-outline-primary btn-sm">
+                                            <i class="fas fa-sync-alt"></i>
+                                        </button>
+                                    </div>
+                                </form>
+                                <form action="{{ url_for('update_cart') }}" method="post" class="d-inline">
+                                    <input type="hidden" name="action" value="remove">
+                                    <input type="hidden" name="index" value="{{ loop.index0 }}">
+                                    <button type="submit" class="btn btn-outline-danger btn-sm">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="text-center py-5">
+                            <i class="fas fa-shopping-cart fa-3x text-muted mb-3"></i>
+                            <h5 class="text-muted">장바구니가 비어있습니다</h5>
+                            <p class="text-muted">메뉴를 선택하여 장바구니에 추가해보세요.</p>
+                            <a href="{{ url_for('user_menu') }}" class="btn btn-primary">
+                                <i class="fas fa-utensils me-2"></i>메뉴 보기
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            {% if cart %}
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="fas fa-calculator me-2"></i>주문 요약</h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>총 금액:</span>
+                        <strong class="text-primary">{{ "{:,}".format(total) }}원</strong>
+                    </div>
+                    <hr>
+                    
+                    <form action="{{ url_for('place_order') }}" method="post">
+                        <div class="mb-3">
+                            <label for="customer_name" class="form-label">고객명 *</label>
+                            <input type="text" class="form-control" id="customer_name" name="customer_name" 
+                                   required placeholder="고객명을 입력하세요">
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="delivery_location" class="form-label">배달 위치 *</label>
+                            <input type="text" class="form-control" id="delivery_location" name="delivery_location" 
+                                   required placeholder="배달 위치를 입력하세요">
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="delivery_time" class="form-label">배달 시간</label>
+                            <select class="form-select" id="delivery_time" name="delivery_time">
+                                <option value="">즉시 배달</option>
+                                <option value="30분 후">30분 후</option>
+                                <option value="1시간 후">1시간 후</option>
+                                <option value="2시간 후">2시간 후</option>
+                            </select>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="order_request" class="form-label">주문 요청사항</label>
+                            <textarea class="form-control" id="order_request" name="order_request" 
+                                      rows="3" placeholder="특별한 요청사항이 있으시면 입력해주세요"></textarea>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-success w-100 mb-2">
+                            <i class="fas fa-check me-2"></i>주문 완료
+                        </button>
+                        
+                        <form action="{{ url_for('clear_cart') }}" method="post" class="d-inline w-100">
+                            <button type="submit" class="btn btn-outline-danger w-100" 
+                                    onclick="return confirm('장바구니를 비우시겠습니까?')">
+                                <i class="fas fa-trash me-2"></i>장바구니 비우기
+                            </button>
+                        </form>
+                    </form>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // 수량 변경 폼 제출
+    const quantityForms = document.querySelectorAll('form[action*="update_cart"]');
+    quantityForms.forEach(form => {
+        const quantityInput = form.querySelector('input[name="quantity"]');
+        if (quantityInput) {
+            quantityInput.addEventListener('change', function() {
+                const quantity = parseInt(this.value);
+                if (quantity < 1 || quantity > 10) {
+                    alert('수량은 1~10개 사이로 입력해주세요.');
+                    this.value = 1;
+                    return;
+                }
+            });
+        }
+    });
+    
+    // 주문 폼 제출
+    const orderForm = document.querySelector('form[action*="place_order"]');
+    if (orderForm) {
+        orderForm.addEventListener('submit', function(e) {
+            const customerName = document.getElementById('customer_name').value.trim();
+            const deliveryLocation = document.getElementById('delivery_location').value.trim();
+            
+            if (!customerName || !deliveryLocation) {
+                e.preventDefault();
+                alert('고객명과 배달 위치는 필수 입력 항목입니다.');
+                return;
+            }
+        });
+    }
+});
+</script>
+{% endblock %} 

@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block title %}카페 주문 관리 시스템 - 홈{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 text-center">
+            <h1 class="display-4 mb-4">
+                <i class="fas fa-coffee text-primary me-3"></i>
+                카페 주문 관리 시스템
+            </h1>
+            <p class="lead mb-5">편리한 카페 주문과 관리 시스템을 경험해보세요.</p>
+            
+            <div class="row g-4">
+                <div class="col-md-6">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-body text-center">
+                            <i class="fas fa-utensils fa-3x text-success mb-3"></i>
+                            <h5 class="card-title">메뉴 주문</h5>
+                            <p class="card-text">다양한 메뉴를 확인하고 주문해보세요.</p>
+                            <a href="{{ url_for('user_menu') }}" class="btn btn-success btn-lg">
+                                <i class="fas fa-shopping-cart me-2"></i>메뉴 보기
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-body text-center">
+                            <i class="fas fa-user-shield fa-3x text-primary mb-3"></i>
+                            <h5 class="card-title">관리자</h5>
+                            <p class="card-text">메뉴 관리, 매출 확인, 주문 관리</p>
+                            <a href="{{ url_for('admin_login') }}" class="btn btn-primary btn-lg">
+                                <i class="fas fa-sign-in-alt me-2"></i>관리자 로그인
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-5">
+                <h3 class="mb-4">주요 기능</h3>
+                <div class="row g-4">
+                    <div class="col-md-4">
+                        <div class="text-center">
+                            <i class="fas fa-mobile-alt fa-2x text-info mb-2"></i>
+                            <h6>모바일 친화적</h6>
+                            <p class="small text-muted">반응형 디자인으로 모든 기기에서 편리하게 사용</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="text-center">
+                            <i class="fas fa-chart-line fa-2x text-warning mb-2"></i>
+                            <h6>실시간 매출 관리</h6>
+                            <p class="small text-muted">일/주/월 매출 통계 및 주문 현황 실시간 확인</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="text-center">
+                            <i class="fas fa-file-excel fa-2x text-success mb-2"></i>
+                            <h6>데이터 관리</h6>
+                            <p class="small text-muted">Excel 파일로 주문 데이터 가져오기/내보내기</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 
