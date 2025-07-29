@@ -1,5 +1,10 @@
 import os
-import pandas as pd
+try:
+    import pandas as pd
+    PANDAS_AVAILABLE = True
+except ImportError:
+    PANDAS_AVAILABLE = False
+    print("Warning: pandas is not available. Excel import/export features will be disabled.")
 from datetime import datetime, timedelta
 from flask import Flask, render_template, request, redirect, url_for, flash, session, jsonify, send_file
 from flask_sqlalchemy import SQLAlchemy
@@ -270,6 +275,10 @@ def admin_sales_filter():
 @app.route('/admin/export_all_orders')
 @admin_required
 def admin_export_all_orders():
+    if not PANDAS_AVAILABLE:
+        flash('Excel 내보내기 기능을 사용하려면 pandas가 필요합니다.', 'error')
+        return redirect(url_for('admin_sales'))
+    
     orders = Order.query.order_by(Order.order_date.desc()).all()
     
     # Excel 파일 생성
@@ -447,6 +456,10 @@ def admin_delete_category(category):
 @admin_required
 def admin_import_orders():
     if request.method == 'POST':
+        if not PANDAS_AVAILABLE:
+            flash('Excel 가져오기 기능을 사용하려면 pandas가 필요합니다.', 'error')
+            return redirect(request.url)
+        
         if 'file' not in request.files:
             flash('파일을 선택해주세요.', 'error')
             return redirect(request.url)
@@ -544,4 +557,4 @@ def delete_order(id):
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
-    app.run(debug=True) 
+    app.run(debug=True, ) 
